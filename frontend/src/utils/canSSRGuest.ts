@@ -12,11 +12,10 @@ export function canSSRGuest<P>(fn: GetServerSideProps<P>){
 
         //caso tente acessar já com o login, redirecionamos.
         const cookies = parseCookies(ctx);
-        const token = cookies['@nextauth.token'];
-        
-        console.log("Teste")
+        //const token = ;
+    
 
-        if(token){
+        if(cookies['@nextauth.token']){
             return {
                 redirect:{
                     destination:'/dashboard',
