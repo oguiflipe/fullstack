@@ -5,7 +5,7 @@ import { CreateProductsService } from "../../services/products/CreateProductsSer
 class CreateProductController{
     async handle(req: Request, res: Response){
 
-        const {name, price, description, cartegory_id } = req.body;
+        const {name, price, description, category_id } = req.body;
 
         
         const createProductService = new CreateProductsService();
@@ -22,7 +22,7 @@ class CreateProductController{
                 price,
                 description,
                 banner, 
-                cartegory_id
+                category_id
             });
     
             return res.json(product);
