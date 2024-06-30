@@ -9,9 +9,8 @@ import { AuthContext } from "../contexts/AuthContext";
 
 function Routes(){
 
-    const {isAuthenticated} = useContext(AuthContext)
+    const {isAuthenticated, loading} = useContext(AuthContext)
 
-    const loading = false;
 
 
     // Carregando e mostrando o login para o usuário
@@ -24,7 +23,7 @@ function Routes(){
                 alignItems: 'center'
                 }}
             >
-                <ActivityIndicator  size={60} color="#f5f7fb"/>
+                <ActivityIndicator  size={60} color="#fffafa"/>
             </View>
         )
     }

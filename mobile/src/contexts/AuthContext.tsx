@@ -1,4 +1,4 @@
-import React, {useState, createContext, ReactNode} from "react";
+import React, {useState, createContext, ReactNode, useEffect} from "react";
 
 //api para ter acesso ao banco de dados criado
 import { api } from "../services/api";
@@ -10,6 +10,9 @@ type AuthContextData = {
     user: UserProps;
     isAuthenticated: boolean;
     signIn: (credentials: SignInProps) => Promise<void>
+    loadingAuth: boolean;
+    loading: boolean;
+    signOut: () => Promise<void>;
 }
 
 type UserProps = {
@@ -42,7 +45,36 @@ export function AuthProvider({children}: AuthProviderProps){
 
     const [loadingAuth, setLoadingAuth] = useState(false);
 
+    const [loading, setLoading] = useState(true);
+
     const isAuthenticated = !!user.name; 
+
+    //permanecendo com o usuário logado após o login
+    useEffect(() => {
+        async function getUser(){
+            //pegando os dados salvos do usuário
+            const userInfo = await AsyncStorage.getItem('@userPizzaria');
+
+            //caso o usuário não tenha feito login, retorna vazio.
+            let hasUser: UserProps = JSON.parse(userInfo || '{}');
+
+            //verificando se recebemos os dados do usuário
+            if(Object.keys(hasUser).length > 0){
+                //informando por padrão o token
+                api.defaults.headers.common['Authorization'] = `Bearer ${hasUser.token}`;
+
+                setUser({
+                    id: hasUser.id,
+                    name: hasUser.name,
+                    email: hasUser.email,
+                    token: hasUser.token
+                })
+            }
+            setLoading(false)
+        }
+
+        getUser();
+    }, []);
 
     // Metodo de login - validando os dados do usuário 
     async function signIn({email, password}: SignInProps){
@@ -84,9 +116,31 @@ export function AuthProvider({children}: AuthProviderProps){
     }
 
 
+    //metodo de logout 
+    async function signOut() {
+        await AsyncStorage.clear()
+        .then(() => {
+            setUser({
+                id: '',
+                name: '',
+                email: '',
+                token: ''
+            })
+        })
+    }
+
+
     return(
         // Todas as paginas dentro do AuthContext
-        <AuthContext.Provider value={{user,isAuthenticated, signIn}}>
+        <AuthContext.Provider 
+            value={{
+                user,
+                isAuthenticated, 
+                signIn, 
+                signOut, 
+                loading, 
+                loadingAuth
+            }}>
             {children}
         </AuthContext.Provider>
     )

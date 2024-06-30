@@ -1,4 +1,4 @@
-import React, { useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 
 import { 
     View, 
@@ -6,7 +6,8 @@ import {
     StyleSheet,
     Image,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    ActivityIndicator
 } from "react-native";
 
 import { AuthContext } from "../../contexts/AuthContext";
@@ -14,7 +15,7 @@ import { AuthContext } from "../../contexts/AuthContext";
 
 export default function SignIn(){
 
-    const { signIn} = useContext(AuthContext);
+    const { signIn, loadingAuth} = useContext(AuthContext);
 
 
     //armazenando as informações em um estado
@@ -43,21 +44,27 @@ export default function SignIn(){
                 <TextInput 
                 style={styles.input}
                 placeholder="Digite seu e-mail"
-                placeholderTextColor='#f0f0f0'
+                placeholderTextColor='#fffafa'
                 value={email}
                 onChangeText={setEmail}
                 />
                 <TextInput 
                 style={styles.input}
                 placeholder="Digite sua senha"
-                placeholderTextColor='#f0f0f0'
+                placeholderTextColor='#fffafa'
                 secureTextEntry={true}
                 value={password}
                 onChangeText={setPassword}
                 />
 
+                
                 <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                    <Text style={styles.textButton}>Entrar</Text>
+                    {loadingAuth ? (
+                        <ActivityIndicator size={25} color="#fff"/>
+                    ):(
+                        <Text style={styles.textButton}>Entrar</Text>
+                    )
+                }
                 </TouchableOpacity>
             </View>
         </View>
@@ -88,7 +95,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         borderRadius: 4,
         paddingHorizontal: 8,
-        color: '#fff'
+        color: '#fffafa'
     },
     button:{
         justifyContent: "center",
